@@ -3,7 +3,7 @@
 
 const About = () => {
   return (
-    <div className="lg:py-16 lg:mt-24 py-40 lg:px-10">
+    <div className="lg:py-16 lg:mt-24 pt-40 lg:px-10">
       <div className="lg:flex">
         <div className={`lg:w-3/6`}>
           <img src="/about-img.png" alt="about scooTer" width={471} height={619} className={`hidden lg:block animate__animated animate__fadeInLeft animate__slow`} />
