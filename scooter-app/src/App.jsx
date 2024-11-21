@@ -3,6 +3,7 @@ import ScooterNavbar from './components/navbar';
 import Dashboard from './components/Dashboard';
 import About from './components/about';
 import FiturPage from './components/fitur';
+import HowToPage from './components/howto';
 function App() {
   return (
     <>
@@ -15,6 +16,9 @@ function App() {
       </div>
       <div className="">
         <FiturPage />
+      </div>
+      <div className="lg:py-24">
+        <HowToPage />
       </div>
     </>
   );
