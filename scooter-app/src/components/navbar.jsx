@@ -1,5 +1,6 @@
 import React from 'react';
 import { Navbar, MobileNav, Typography, Button, IconButton } from '@material-tailwind/react';
+import { Link } from 'react-router-dom';
 
 export default function ScooterNavbar() {
   const [openNav, setOpenNav] = React.useState(false);
@@ -39,9 +40,9 @@ export default function ScooterNavbar() {
           <Typography as="lokasi" href="#" variant="small" color="blue-gray" className="hidden lg:inline-block cursor-pointer">
             <img src="/location.png" alt="lokasi" width={30} height={30} />
           </Typography>
-          <Button variant="gradient" size="sm" className="hidden lg:inline-block bg-[#3d3d3d]">
+          <Link to={'/login'} variant="gradient" size="sm" className="hidden lg:inline-block bg-[#3d3d3d]">
             <span style={{ fontFamily: 'Montserrat, sans-serif' }} className='text-lg'>Login</span>
-          </Button>
+          </Link>
         </div>
         <IconButton variant="text" className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden animate__animated animate__bounceIn animate__delay-2s" ripple={false} onClick={() => setOpenNav(!openNav)}>
           {openNav ? (
