@@ -1,21 +1,18 @@
 import React from 'react';
 import { Navbar, MobileNav, Typography, Button, IconButton } from '@material-tailwind/react';
+import { SignedOut, SignInButton, SignedIn, UserButton } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function ScooterNavbar() {
   const [openNav, setOpenNav] = React.useState(false);
   const navigate = useNavigate();
 
-  const handleLoginClick = () => {
-    navigate('/login');
-  };
-
   React.useEffect(() => {
     window.addEventListener('resize', () => window.innerWidth >= 960 && setOpenNav(false));
   }, []);
 
   const navList = (
-    <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg-gap-x-2 gap-y-4 lg:gap-7 animate__animated animate__bounceIn animate__delay-2s ">
+    <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg-gap-x-2 gap-y-4 lg:gap-7 animate__animated animate__bounceIn animate__delay-2s">
       <Typography as="li" variant="small" color="blue-gray" className="flex items-center p-1 font-medium">
         <a style={{ fontFamily: 'Montserrat, sans-serif' }} href="#" className="flex items-center lg:text-lg text-[#3d3d3d]">
           About
@@ -42,12 +39,43 @@ export default function ScooterNavbar() {
         </Typography>
         <div className="hidden lg:block">{navList}</div>
         <div className="flex items-center gap-x-6 animate__animated animate__bounceIn animate__delay-3s">
+          {/* Location Icon */}
           <Typography as="lokasi" href="#" variant="small" color="blue-gray" className="hidden lg:inline-block cursor-pointer">
             <img src="/location.png" alt="lokasi" width={30} height={30} />
           </Typography>
-          <Button onClick={handleLoginClick} variant="gradient" size="sm" className="hidden lg:inline-block bg-[#3d3d3d]">
+
+          {/* Scooter Icon (only if SignedIn) */}
+          <SignedIn>
+            <Typography
+              as="scooter"
+              onClick={() => navigate('/rentals')} // Redirect ke halaman peminjaman
+              variant="small"
+              color="blue-gray"
+              className="hidden lg:inline-block cursor-pointer"
+            >
+              <img src="/scooter.png" alt="scooter" width={30} height={30} />
+            </Typography>
+          </SignedIn>
+
+          {/* User Button */}
+          <Button variant="gradient" size="sm" className="hidden lg:inline-block bg-transparent">
             <span style={{ fontFamily: 'Montserrat, sans-serif' }} className="text-lg">
-              Login
+              <SignedOut>
+                <SignInButton />
+              </SignedOut>
+              <SignedIn>
+                <div className="flex justify-center items-center">
+                  <UserButton
+                    signOutRedirectUrl="/"
+                    appearance={{
+                      elements: {
+                        userButtonAvatarBox: { backgroundColor: 'transparent' },
+                        userButtonAvatarImage: { borderRadius: '50%' },
+                      },
+                    }}
+                  />
+                </div>
+              </SignedIn>
             </span>
           </Button>
         </div>
@@ -69,14 +97,41 @@ export default function ScooterNavbar() {
         </IconButton>
       </div>
       <MobileNav open={openNav}>
-        <div className="container mx-auto">
+        <div className="container">
           {navList}
-          <div className="gap-y-4">
-            <Typography as="lokasi" href="#" variant="small" color="blue-gray" className="mb-4 lg:hidden inline-block cursor-pointer">
-              <img src="/location.png" alt="lokasi" width={20} height={20} />
-            </Typography>
-            <Button fullWidth variant="gradient" size="sm" className="bg-[#3d3d3d]">
-              <span style={{ fontFamily: 'Montserrat, sans-serif' }}>Login</span>
+          <div className="flex flex-col gap-y-4 justify-center items-center mt-6">
+            {/* Mobile Location Icon */}
+            <SignedIn>
+              <Typography as="scooter" href="#" className="flex justify-center items-center">
+                <img src="/location.png" alt="location" width={25} height={25} className="cursor-pointer" />
+              </Typography>
+            </SignedIn>
+
+            {/* Mobile Scooter Icon */}
+            <SignedIn>
+              <Typography as="scooter" onClick={() => navigate('/rentals')} className="cursor-pointer flex justify-center items-center">
+                <img src="/scooter.png" alt="scooter" width={25} height={25} />
+              </Typography>
+            </SignedIn>
+
+            {/* Mobile User Button */}
+            <Button fullWidth variant="gradient" size="sm" className="bg-transparent flex justify-center items-center">
+              <span style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                <SignedOut>
+                  <SignInButton />
+                </SignedOut>
+                <SignedIn>
+                  <UserButton
+                    signOutRedirectUrl="/"
+                    appearance={{
+                      elements: {
+                        userButtonAvatarBox: { backgroundColor: 'transparent' },
+                        userButtonAvatarImage: { borderRadius: '50%' },
+                      },
+                    }}
+                  />
+                </SignedIn>
+              </span>
             </Button>
           </div>
         </div>
