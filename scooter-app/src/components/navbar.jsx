@@ -34,7 +34,7 @@ export default function ScooterNavbar() {
   return (
     <Navbar className="sticky lg:top-4 top-0 z-50 mx-auto max-w-screen-xl lg:mt-4 px-6 py-2 lg:px-8 lg:py-4 bg-[#fefefe] animate__animated animate__fadeInDown">
       <div className="container mx-auto flex items-center justify-between text-blue-gray-900">
-        <Typography as="a" href="#" className="mr-4 cursor-pointer py-1.5 font-medium -ml-6 animate__animated animate__bounceIn animate__delay-1s">
+        <Typography as="a" href="/" className="mr-4 cursor-pointer py-1.5 font-medium -ml-6 animate__animated animate__bounceIn animate__delay-1s">
           <img src="/scoot-logo 1.png" alt="logo" width={130} height={0} />
         </Typography>
         <div className="hidden lg:block">{navList}</div>
