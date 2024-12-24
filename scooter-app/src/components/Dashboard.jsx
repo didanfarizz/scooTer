@@ -39,7 +39,7 @@ const Dashboard = () => {
           {isSignedIn ? (
             // Button aktif jika user login
             <Button
-              onClick={() => navigate('/payment-form')}
+              onClick={() => navigate('/payment')}
               className="lg:w-96 lg:text-2xl bg-[#3d3d3d] text-[#e5e5e5] rounded-[15px] hover:bg-[#e5e5e5] hover:text-[#3d3d3d]"
               style={{ fontFamily: 'Montserrat, sans-serif' }}
             >

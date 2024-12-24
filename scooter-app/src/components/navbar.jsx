@@ -1,18 +1,19 @@
 import React from 'react';
 import { Navbar, MobileNav, Typography, Button, IconButton } from '@material-tailwind/react';
-import { SignedOut, SignInButton, SignedIn, UserButton } from '@clerk/clerk-react';
+import { SignedOut, SignInButton, SignedIn, UserButton, useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function ScooterNavbar() {
   const [openNav, setOpenNav] = React.useState(false);
   const navigate = useNavigate();
+  const { user } = useUser(); // Mendapatkan data pengguna
 
   React.useEffect(() => {
     window.addEventListener('resize', () => window.innerWidth >= 960 && setOpenNav(false));
   }, []);
 
   const navList = (
-    <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg-gap-x-2 gap-y-4 lg:gap-7 animate__animated animate__bounceIn animate__delay-2s">
+    <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg-gap-x-2 gap-y-4 lg:gap-7">
       <Typography as="li" variant="small" color="blue-gray" className="flex items-center p-1 font-medium">
         <a style={{ fontFamily: 'Montserrat, sans-serif' }} href="#" className="flex items-center lg:text-lg text-[#3d3d3d]">
           About
@@ -32,23 +33,31 @@ export default function ScooterNavbar() {
   );
 
   return (
-    <Navbar className="sticky lg:top-4 top-0 z-50 mx-auto max-w-screen-xl lg:mt-4 px-6 py-2 lg:px-8 lg:py-4 bg-[#fefefe] animate__animated animate__fadeInDown">
+    <Navbar className="sticky lg:top-4 top-0 z-50 mx-auto max-w-screen-xl lg:mt-4 px-6 py-2 lg:px-8 lg:py-4 bg-[#fefefe]">
       <div className="container mx-auto flex items-center justify-between text-blue-gray-900">
-        <Typography as="a" href="/" className="mr-4 cursor-pointer py-1.5 font-medium -ml-6 animate__animated animate__bounceIn animate__delay-1s">
+        <Typography as="a" href="/" className="mr-4 cursor-pointer py-1.5 font-medium -ml-6">
           <img src="/scoot-logo 1.png" alt="logo" width={130} height={0} />
         </Typography>
         <div className="hidden lg:block">{navList}</div>
-        <div className="flex items-center gap-x-6 animate__animated animate__bounceIn animate__delay-3s">
-          {/* Location Icon */}
-          <Typography as="lokasi" href="#" variant="small" color="blue-gray" className="hidden lg:inline-block cursor-pointer">
-            <img src="/location.png" alt="lokasi" width={30} height={30} />
-          </Typography>
+        <div className="flex items-center gap-x-6">
+          {/* Icon Lokasi */}
+          <SignedIn>
+            <Typography
+              as="lokasi"
+              href="#"
+              variant="small"
+              color="blue-gray"
+              className="hidden lg:inline-block cursor-pointer"
+            >
+              <img src="/location.png" alt="lokasi" width={30} height={30} />
+            </Typography>
+          </SignedIn>
 
-          {/* Scooter Icon (only if SignedIn) */}
+          {/* Icon Scooter */}
           <SignedIn>
             <Typography
               as="scooter"
-              onClick={() => navigate('/rentals')} // Redirect ke halaman peminjaman
+              onClick={() => navigate('/rentals')}
               variant="small"
               color="blue-gray"
               className="hidden lg:inline-block cursor-pointer"
@@ -64,7 +73,7 @@ export default function ScooterNavbar() {
                 <SignInButton />
               </SignedOut>
               <SignedIn>
-                <div className="flex justify-center items-center">
+                {user?.emailAddresses.some((email) => email.verification.status === 'verified') ? (
                   <UserButton
                     signOutRedirectUrl="/"
                     appearance={{
@@ -74,14 +83,24 @@ export default function ScooterNavbar() {
                       },
                     }}
                   />
-                </div>
+                ) : (
+                  <div className="text-red-600 text-sm">
+                    Please verify your email address.
+                    <button
+                      onClick={() => user?.emailAddresses[0]?.verification.start()}
+                      className="ml-2 text-blue-600 underline"
+                    >
+                      Resend Verification
+                    </button>
+                  </div>
+                )}
               </SignedIn>
             </span>
           </Button>
         </div>
         <IconButton
           variant="text"
-          className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden animate__animated animate__bounceIn animate__delay-2s"
+          className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
           ripple={false}
           onClick={() => setOpenNav(!openNav)}
         >
