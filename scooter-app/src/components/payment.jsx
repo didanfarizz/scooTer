@@ -84,7 +84,7 @@ const PaymentForm = () => {
       return;
     }
 
-    const randomId = `CUS${Math.random().toString(36).substr(2, 6).toUpperCase()}`; // Generate random ID
+    const randomId = `CUS${Math.random().toString(36).substring(2, 6).toUpperCase()}`; // Generate random ID
     const newOrder = {
       id: randomId,
       name: `${formData.firstName} ${formData.lastName}`, // Gabungkan First Name dan Last Name
