@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navbar, MobileNav, Typography, Button, IconButton } from '@material-tailwind/react';
+import { Navbar, Collapse, Typography, Button, IconButton } from '@material-tailwind/react';
 import { SignedOut, SignInButton, SignedIn, UserButton, useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -115,7 +115,7 @@ export default function ScooterNavbar() {
           )}
         </IconButton>
       </div>
-      <MobileNav open={openNav}>
+      <Collapse open={openNav}>
         <div className="container">
           {navList}
           <div className="flex flex-col gap-y-4 justify-center items-center mt-6">
@@ -154,7 +154,7 @@ export default function ScooterNavbar() {
             </Button>
           </div>
         </div>
-      </MobileNav>
+      </Collapse>
     </Navbar>
   );
 }
