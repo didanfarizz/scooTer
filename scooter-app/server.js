@@ -1,67 +1,88 @@
-import express from "express";
-import bodyParser from "body-parser";
-import cors from "cors";
-import midtransClient from "midtrans-client";
+import express from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+// import { v4 as uuidv4 } from 'uuid';  // Digunakan untuk membuat ID unik untuk order
+import sendOtp from './send-otp.js';  // Pastikan file send-otp.js ada di direktori yang sesuai
 
 const app = express();
-app.use(bodyParser.json());
-app.use(cors());
+const port = 1000;
 
-// Konfigurasi Midtrans Client
-const snap = new midtransClient.Snap({
-  isProduction: false,
-  serverKey: "SB-Mid-server-k_HK2CyuwM4X_XDRj7m8n2zq", // Ganti dengan server key Anda
-  clientKey:'SB-Mid-client-r575jHgegjOGxwkH'
-});
+// Middleware
+app.use(cors());  // Untuk menangani masalah CORS (Cross-Origin Resource Sharing)
+app.use(bodyParser.json());  // Untuk parsing JSON request body
 
-// Endpoint untuk membuat transaksi
-app.post("/create-transaction", async (req, res) => {
-  const { orderId, amount, customerDetails } = req.body;
+// Dummy database untuk menyimpan data pengguna dan OTP
+const users = {};
 
-  // Log data request untuk debugging
-  console.log("Received data:", { orderId, amount, customerDetails });
-
-  if (!orderId || !amount || !customerDetails) {
-    console.error("Missing required fields");
-    return res
-      .status(400)
-      .json({ error: "Invalid request: Missing required fields" });
-  }
-
-  if (
-    typeof orderId !== "string" ||
-    typeof amount !== "number" ||
-    typeof customerDetails !== "object"
-  ) {
-    console.error("Incorrect data types");
-    return res
-      .status(400)
-      .json({ error: "Invalid request: Incorrect data types" });
-  }
-
-  const parameter = {
-    transaction_details: {
-      order_id: orderId,
-      gross_amount: amount,
-    },
-    customer_details: customerDetails,
-  };
-
+// Endpoint untuk memproses transaksi pembayaran
+app.post('/api/payment/process-transaction', async (req, res) => {
   try {
-    const transaction = await snap.createTransaction(parameter);
-    console.log("Transaction response:", transaction);
-    res.json({ token: transaction.token });
+    const { orderId, amount, customerDetails } = req.body;
+
+    // Validasi data yang diterima
+    if (!orderId || !amount || !customerDetails) {
+      return res.status(400).json({ message: "Invalid request data" });
+    }
+
+    // Simulasi penyimpanan data order dan informasi pengguna
+    users[customerDetails.email] = {
+      ...customerDetails,
+      orderId,
+      otp: null,
+      isVerified: false,
+    };
+
+    // Mengirimkan response setelah transaksi dimulai
+    res.status(200).json({ message: "Transaction initiated", token: "fake_token" });
   } catch (error) {
-    console.error("Midtrans API Error:", error.message);
-    res.status(500).json({
-      error: "Internal Server Error",
-      details: error.message,
-    });
+    res.status(500).json({ message: "Internal server error", error: error.message });
   }
 });
 
-// Menjalankan server
-const PORT = 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+// Endpoint untuk mengirim OTP ke email pengguna
+app.post('/api/send-otp', (req, res) => {
+  const { email, otp } = req.body;
+
+  if (!email || !otp) {
+    return res.status(400).json({ error: 'Email and OTP are required' });
+  }
+
+  // Kirim OTP melalui metode yang ada pada sendOtp.js (misalnya dengan email)
+  sendOtp(email, otp);
+
+  // Simpan OTP pada pengguna yang sesuai di database sementara
+  if (users[email]) {
+    users[email].otp = otp;
+    res.status(200).json({ message: 'OTP sent successfully' });
+  } else {
+    res.status(404).json({ error: 'User not found' });
+  }
+});
+
+// Endpoint untuk memverifikasi OTP
+app.post('/api/verify-otp', (req, res) => {
+  const { userId, otp } = req.body;
+
+  if (!userId || !otp) {
+    return res.status(400).json({ error: 'Data not complete' });
+  }
+
+  const user = users[userId];
+
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  // Verifikasi OTP yang dikirimkan
+  if (user.otp === otp) {
+    user.isVerified = true;
+    return res.status(200).json({ message: 'OTP verified successfully' });
+  } else {
+    return res.status(400).json({ error: 'Invalid OTP' });
+  }
+});
+
+// Menjalankan server di port yang telah ditentukan
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
 });
