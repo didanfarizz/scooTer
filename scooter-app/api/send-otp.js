@@ -1,27 +1,29 @@
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
 
 // Fungsi untuk mengirim OTP
 const sendOtp = (email, otp) => {
+  console.log(`Preparing to send OTP to ${email} with code: ${otp}`);
+
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: "gmail",
     auth: {
-      user: 'your-email@gmail.com',  // Ganti dengan email Anda
-      pass: 'your-email-password',  // Ganti dengan password email Anda
+      user: "didanfarizabqari@gmail.com", // Ganti dengan email Anda
+      pass: "DanDinDan201537_*", // Ganti dengan password email Anda
     },
   });
 
   const mailOptions = {
-    from: 'your-email@gmail.com',
+    from: "didanfarizabqari@gmail.com",
     to: email,
-    subject: 'Your OTP Code',
+    subject: "Your OTP Code",
     text: `Your OTP code is: ${otp}`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.log('Error sending OTP:', error);
+      console.error("Error sending OTP:", error.message);
     } else {
-      console.log('OTP sent: ' + info.response);
+      console.log("OTP sent: " + info.response);
     }
   });
 };

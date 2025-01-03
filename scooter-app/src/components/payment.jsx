@@ -52,62 +52,49 @@ const PaymentForm = () => {
             phone,
             city,
           },
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
         }
       );
   
-      if (response.status !== 200) {
-        console.error("Backend error:", response.data);
-        throw new Error(response.data.error || "Payment initiation failed");
-      }
+      if (response.status === 200) {
+        const { token } = response.data;
   
-      const { token } = response.data;
+        if (token && window.snap) {
+          window.snap.pay(token, {
+            onSuccess: async () => {
+              toast.success("Payment successful!");
   
-      if (token && window.snap) {
-        window.snap.pay(token, {
-          onSuccess: async (result) => {
-            console.log("Success:", result);
-            toast.success("Payment successful!");
-  
-            // Kirim OTP ke email pengguna setelah pembayaran sukses
-            try {
-              const otp = Math.floor(100000 + Math.random() * 900000); // Generate OTP 6 digit
-              await axios.post("http://localhost:1000/api/send-otp", {
-                email,
-                otp,
-              });
-  
-              // Arahkan pengguna ke RentalsPage setelah pembayaran sukses
-              navigate("/rentals");
-            } catch (error) {
-              console.error("Error sending OTP:", error);
-              toast.error("Failed to send OTP!");
-            }
-          },
-          onPending: (result) => {
-            console.log("Pending:", result);
-            toast.info("Payment pending!");
-          },
-          onError: (result) => {
-            console.log("Error:", result);
-            toast.error("Payment failed!");
-          },
-          onClose: () => {
-            console.log("Payment popup closed");
-          },
-        });
-      } else {
-        throw new Error("Snap library is not loaded or token is invalid.");
+              // Kirim OTP setelah pembayaran berhasil
+              try {
+                await axios.post("http://localhost:1000/api/send-otp", {
+                  email,
+                });
+                toast.success("OTP sent to your email!");
+                navigate("/rentals"); // Redirect ke RentalsPage
+              } catch (error) {
+                console.error("Error sending OTP:", error.message);
+                toast.error("Failed to send OTP.");
+              }
+            },
+            onPending: () => {
+              toast.info("Payment pending!");
+            },
+            onError: () => {
+              toast.error("Payment failed!");
+            },
+            onClose: () => {
+              console.log("Payment popup closed");
+            },
+          });
+        } else {
+          throw new Error("Snap library is not loaded or token is invalid.");
+        }
       }
     } catch (error) {
       console.error("Error initiating payment:", error.message);
       toast.error("Failed to initiate payment!");
     }
   };
+  
   
 
   return (
