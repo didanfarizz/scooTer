@@ -45,6 +45,7 @@ export default function ScooterNavbar() {
             <Typography
               as="lokasi"
               href="#"
+              onClick={() => navigate('/maps')}
               variant="small"
               color="blue-gray"
               className="hidden lg:inline-block cursor-pointer"
