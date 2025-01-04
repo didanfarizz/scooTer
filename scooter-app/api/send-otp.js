@@ -1,31 +1,24 @@
-import nodemailer from "nodemailer";
+import twilio from "twilio";
+
+// Konfigurasi Twilio
+const accountSid = "your_account_sid"; // Ganti dengan Twilio Account SID
+const authToken = "your_auth_token"; // Ganti dengan Twilio Auth Token
+const whatsappNumber = "your_twilio_whatsapp_number"; // Ganti dengan nomor WhatsApp Twilio Anda
+const client = twilio(accountSid, authToken);
 
 // Fungsi untuk mengirim OTP
-const sendOtp = (email, otp) => {
-  console.log(`Preparing to send OTP to ${email} with code: ${otp}`);
-
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "didanfarizabqari@gmail.com", // Ganti dengan email Anda
-      pass: "DanDinDan201537_*", // Ganti dengan password email Anda
-    },
-  });
-
-  const mailOptions = {
-    from: "didanfarizabqari@gmail.com",
-    to: email,
-    subject: "Your OTP Code",
-    text: `Your OTP code is: ${otp}`,
-  };
-
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error("Error sending OTP:", error.message);
-    } else {
-      console.log("OTP sent: " + info.response);
-    }
-  });
+const sendOtp = async (phone, otp) => {
+  try {
+    console.log(`Preparing to send OTP to ${phone} via WhatsApp: ${otp}`);
+    const message = await client.messages.create({
+      from: `whatsapp:${whatsappNumber}`,
+      to: `whatsapp:${phone}`,
+      body: `Your OTP code is: ${otp}. Please use this to activate your account.`,
+    });
+    console.log("OTP sent successfully:", message.sid);
+  } catch (error) {
+    console.error("Error sending OTP:", error.message);
+  }
 };
 
 export default sendOtp;

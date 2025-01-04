@@ -1,5 +1,6 @@
 import express from "express";
 import midtransClient from "midtrans-client";
+import sendOtp from "../send-otp";
 
 const router = express.Router();
 
@@ -37,5 +38,22 @@ router.post("/process-transaction", async (req, res) => {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 });
+
+router.post("/send-otp", async (req, res) => {
+  const { phone, otp } = req.body;
+
+  if (!phone || !otp) {
+    return res.status(400).json({ message: "Phone and OTP are required" });
+  }
+
+  try {
+    await sendOtp(phone, otp); // Gunakan fungsi sendOtp dari `send-otp.js`
+    res.status(200).json({ message: "OTP sent successfully" });
+  } catch (error) {
+    console.error("Error sending OTP:", error.message);
+    res.status(500).json({ message: "Failed to send OTP", error: error.message });
+  }
+});
+
 
 export default router;
