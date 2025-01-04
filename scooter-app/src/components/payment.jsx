@@ -63,16 +63,16 @@ const PaymentForm = () => {
             onSuccess: async () => {
               toast.success("Payment successful!");
   
-              // Kirim OTP setelah pembayaran berhasil
+              // Update status user menjadi Active
               try {
-                await axios.post("http://localhost:1000/api/send-otp", {
-                  email,
+                await axios.post("http://localhost:1000/api/user/update-status", {
+                  email, // Kirim email user untuk identifikasi
+                  status: "Active", // Set status Active
                 });
-                toast.success("OTP sent to your email!");
                 navigate("/rentals"); // Redirect ke RentalsPage
               } catch (error) {
-                console.error("Error sending OTP:", error.message);
-                toast.error("Failed to send OTP.");
+                console.error("Error updating status:", error.message);
+                toast.error("Failed to update user status.");
               }
             },
             onPending: () => {
@@ -94,6 +94,9 @@ const PaymentForm = () => {
       toast.error("Failed to initiate payment!");
     }
   };
+  
+  
+  
   
   
 
