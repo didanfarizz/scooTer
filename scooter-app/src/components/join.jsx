@@ -1,10 +1,10 @@
 // import React from 'react';
-import { useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-const JoinPage = () => {
+const JoinPage = ({ user }) => {
   const navigate = useNavigate();
-  const { isSignedIn } = useUser(); // Mengambil status login user dari Clerk
+  const isSignedIn = !!user; // Mengambil status login user dari Firebase
 
   return (
     <div className="bg-[#e9e9e9]">
@@ -18,18 +18,12 @@ const JoinPage = () => {
             {/* Button Pesan Sekarang */}
             {isSignedIn ? (
               // Jika user sudah login, button aktif
-              <button
-                onClick={() => navigate('/payment')}
-                className="bg-[#708090] text-[#e5e5e5] lg:px-5 lg:py-3 px-3 py-1 rounded-full hover:bg-[#3d3d3d] hover:text-[#fefefe] transition"
-              >
+              <button onClick={() => navigate('/payment')} className="bg-[#708090] text-[#e5e5e5] lg:px-5 lg:py-3 px-3 py-1 rounded-full hover:bg-[#3d3d3d] hover:text-[#fefefe] transition">
                 <p className="font-bold lg:text-2xl text-sm">Pesan Sekarang!</p>
               </button>
             ) : (
               // Jika user belum login, button non-aktif
-              <button
-                disabled
-                className="bg-gray-400 text-white lg:px-5 lg:py-3 px-3 py-1 rounded-full cursor-not-allowed"
-              >
+              <button disabled className="bg-gray-400 text-white lg:px-5 lg:py-3 px-3 py-1 rounded-full cursor-not-allowed">
                 <p className="font-bold lg:text-2xl text-sm">Pesan Sekarang!</p>
               </button>
             )}
@@ -50,6 +44,10 @@ const JoinPage = () => {
       </div>
     </div>
   );
+};
+
+JoinPage.propTypes = {
+  user: PropTypes.object,
 };
 
 export default JoinPage;

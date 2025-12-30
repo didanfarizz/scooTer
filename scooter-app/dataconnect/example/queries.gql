@@ -1,0 +1,44 @@
+mutation CreateIssueReport(
+  $description: String!
+  $issueType: String!
+  $scooterId: UUID!
+) @auth(level: USER) {
+  issueReport_insert(
+    data: {
+      description: $description
+      issueType: $issueType
+      scooterId: $scooterId
+      userId_expr: "auth.uid"
+      reportTime_expr: "request.time"
+    }
+  )
+}
+
+query GetScooterLocation($scooterId: UUID!) @auth(level: PUBLIC, insecureReason: "This query is safe to expose to the public") {
+  scooter(id: $scooterId) {
+    currentLatitude
+    currentLongitude
+  }
+}
+
+mutation EndRide($rideId: UUID!, $endLatitude: Float!, $endLongitude: Float!) @auth(level: USER) {
+  ride_update(
+    key: { id: $rideId }
+    data: {
+      endTime_expr: "request.time"
+      endLatitude: $endLatitude
+      endLongitude: $endLongitude
+      status: "completed"
+    }
+  )
+}
+
+query ListAvailableScooters @auth(level: PUBLIC, insecureReason: "This query is safe to expose to the public") {
+  scooters(where: { status: { eq: "available" } }) {
+    id
+    scooterID
+    currentLatitude
+    currentLongitude
+    batteryLevel
+  }
+}

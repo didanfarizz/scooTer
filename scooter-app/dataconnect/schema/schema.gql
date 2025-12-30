@@ -1,0 +1,50 @@
+type User @table {
+  displayName: String!
+  email: String!
+  createdAt: Timestamp!
+  phoneNumber: String
+  paymentMethodID: String
+}
+
+type Scooter @table {
+  scooterID: String!
+  currentLatitude: Float!
+  currentLongitude: Float!
+  status: String!
+  batteryLevel: Int!
+  lastMaintenanceDate: Timestamp
+  make: String
+  model: String
+}
+
+type Ride @table {
+  user: User
+  scooter: Scooter
+  startTime: Timestamp!
+  startLatitude: Float!
+  startLongitude: Float!
+  status: String!
+  endTime: Timestamp
+  endLatitude: Float
+  endLongitude: Float
+  distance: Float
+  duration: Int
+  cost: Float
+}
+
+type ParkingZone @table {
+  zoneName: String!
+  zoneBoundary: String!
+  isDesignatedParking: Boolean!
+  description: String
+}
+
+type IssueReport @table {
+  user: User
+  scooter: Scooter
+  reportTime: Timestamp!
+  issueType: String!
+  description: String!
+  resolutionStatus: String
+  resolvedBy: User
+}

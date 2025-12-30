@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.18.2",
+    "@dataconnect/generated": "file:src/dataconnect-generated",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@material-tailwind/react": "^2.1.10",
@@ -20,6 +21,7 @@
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "express": "^4.21.2",
+    "firebase": "^12.7.0",
     "midtrans-client": "^1.4.2",
     "mongoose": "^8.9.2",
     "nodemailer": "^6.9.16",

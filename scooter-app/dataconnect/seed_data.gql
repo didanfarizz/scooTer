@@ -1,0 +1,54 @@
+mutation SeedData @auth(level: PUBLIC, insecureReason: "This operation is for seeding data and is safe to expose to the public") {
+  user_insertMany(data: [
+    {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      createdAt: "2024-04-24T00:00:00Z",
+      displayName: "Demo User 1",
+      email: "demo1@example.com"
+    },
+    {
+      id: "550e8400-e29b-41d4-a716-446655440001",
+      createdAt: "2024-04-25T00:00:00Z",
+      displayName: "Demo User 2",
+      email: "demo2@example.com"
+    }
+  ])
+  scooter_insertMany(data: [
+    {
+      id: "650e8400-e29b-41d4-a716-446655440000",
+      batteryLevel: 90,
+      currentLatitude: 37.7749,
+      currentLongitude: -122.4194,
+      scooterID: "SC001",
+      status: "available"
+    },
+    {
+      id: "650e8400-e29b-41d4-a716-446655440001",
+      batteryLevel: 80,
+      currentLatitude: 37.7833,
+      currentLongitude: -122.4067,
+      scooterID: "SC002",
+      status: "available"
+    }
+  ])
+  ride_insertMany(data: [
+    {
+      id: "750e8400-e29b-41d4-a716-446655440000",
+      userId: "550e8400-e29b-41d4-a716-446655440000",
+      scooterId: "650e8400-e29b-41d4-a716-446655440000",
+      startLatitude: 37.7739,
+      startLongitude: -122.4312,
+      startTime: "2024-04-26T10:00:00Z",
+      status: "completed"
+    },
+    {
+      id: "750e8400-e29b-41d4-a716-446655440001",
+      userId: "550e8400-e29b-41d4-a716-446655440001",
+      scooterId: "650e8400-e29b-41d4-a716-446655440001",
+      startLatitude: 37.7823,
+      startLongitude: -122.4184,
+      startTime: "2024-04-26T11:00:00Z",
+      status: "completed"
+    }
+  ])
+}
