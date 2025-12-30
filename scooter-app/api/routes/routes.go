@@ -17,6 +17,9 @@ func SetupRoutes(r *gin.Engine) {
 	api.GET("/user/status/:email", handlers.GetUserStatus)
 	api.POST("/user/update-status", handlers.UpdateUserStatus)
 
+	// Cookie endpoint to expose visitor id (created if missing)
+	api.GET("/cookie/visitor", handlers.GetVisitorCookie)
+
 	// Payment (mock) endpoint
 	api.POST("/payment/process-transaction", handlers.ProcessTransaction)
 }

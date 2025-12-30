@@ -1,6 +1,10 @@
-// import React from 'react'
+import { useVisitor } from '../utils/VisitorContext.jsx';
 
 const FooterPage = () => {
+  const { visitorId, loading, error, refresh } = useVisitor();
+
+  const visitorDisplay = loading ? 'loading...' : error ? 'visitor service unavailable' : visitorId || '-';
+
   return (
     <footer className="bg-[#33CCCCCC] lg:px-14 rounded-t-[50px] lg:-mt-10 -mt-9">
       <div className="lg:flex lg:justify-between lg:items-center lg:py-20 py-8">
@@ -35,6 +39,14 @@ const FooterPage = () => {
           <div className="lg:pb-24 lg:px-0 px-4">
             <p className="lg:text-xl text-[#fefefe] font-bold text-shadow lg:text-end">Contact Us</p>
             <p className="lg:text-base text-[#fefefe] lg:text-end">+62 812-3456-7890</p>
+            <div className="flex items-center gap-2">
+              <p className="text-xs text-[#fefefe] mt-2">Visitor ID: {visitorDisplay}</p>
+              {error && (
+                <button className="text-xs text-white bg-gray-700 px-2 py-1 rounded" onClick={refresh}>
+                  Retry
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

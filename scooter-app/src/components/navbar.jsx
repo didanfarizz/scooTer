@@ -1,220 +1,117 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import {
-  Navbar,
-  Collapse,
-  Typography,
-  Button,
-  IconButton,
-} from '@material-tailwind/react';
+import { Navbar, Collapse, Typography, Button, IconButton, Menu, MenuHandler, MenuList, MenuItem, Avatar, Dialog, DialogHeader, DialogBody, DialogFooter } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../utils/firebaseConfig';
+import useAuth from '../utils/useAuth';
 
-function ScooterNavbar({ user }) {
+export default function ScooterNavbar() {
   const [openNav, setOpenNav] = React.useState(false);
+  const [openLogoutDialog, setOpenLogoutDialog] = React.useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   React.useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 960) setOpenNav(false);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    const resize = () => window.innerWidth >= 960 && setOpenNav(false);
+    window.addEventListener('resize', resize);
+    return () => window.removeEventListener('resize', resize);
   }, []);
 
   const handleLogout = async () => {
     await signOut(auth);
+    setOpenLogoutDialog(false);
     navigate('/');
   };
 
   const navList = (
-    <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center gap-y-4 lg:gap-7">
-      <Typography as="li" className="font-medium">
-        <span
-          onClick={() => navigate('/#about')}
-          className="cursor-pointer lg:text-lg text-[#3d3d3d]"
-          style={{ fontFamily: 'Montserrat, sans-serif' }}
-        >
-          About
-        </span>
+    <ul className="mt-2 mb-4 flex flex-col gap-4 lg:gap-10 lg:text-2xl lg:flex-row lg:items-center text-black">
+      <Typography as="li" className="cursor-pointer hover:text-gray-400">
+        About
       </Typography>
-      <Typography as="li" className="font-medium">
-        <span
-          onClick={() => navigate('/#howto')}
-          className="cursor-pointer lg:text-lg text-[#3d3d3d]"
-          style={{ fontFamily: 'Montserrat, sans-serif' }}
-        >
-          How to?
-        </span>
+      <Typography as="li" className="cursor-pointer hover:text-gray-400">
+        How to?
       </Typography>
-      <Typography as="li" className="font-medium">
-        <span
-          onClick={() => navigate('/#faq')}
-          className="cursor-pointer lg:text-lg text-[#3d3d3d]"
-          style={{ fontFamily: 'Montserrat, sans-serif' }}
-        >
-          FAQ
-        </span>
+      <Typography as="li" className="cursor-pointer hover:text-gray-400">
+        Product
+      </Typography>
+      <Typography as="li" className="cursor-pointer hover:text-gray-400">
+        FAQ
       </Typography>
     </ul>
   );
 
   return (
-    <Navbar className="sticky top-0 lg:top-4 z-50 mx-auto max-w-screen-xl lg:mt-4 px-6 py-2 lg:px-8 lg:py-4 bg-[#fefefe]">
-      <div className="container mx-auto flex items-center justify-between">
-        {/* Logo */}
-        <Typography
-          as="div"
-          className="cursor-pointer py-1.5 font-medium -ml-6"
-          onClick={() => navigate('/')}
-        >
-          <img src="/scoot-logo 1.png" alt="logo" width={130} />
-        </Typography>
+    <>
+      <Navbar className="sticky top-6 my-6 z-50 mx-auto max-w-screen-xl px-6 py-3">
+        <div className="flex items-center justify-between">
+          <img src="/scoot-logo 1.png" alt="logo" width={130} className="cursor-pointer" onClick={() => navigate('/')} />
 
-        {/* Desktop Menu */}
-        <div className="hidden lg:block">{navList}</div>
+          <div className="hidden lg:block">{navList}</div>
 
-        {/* Right Actions */}
-        <div className="flex items-center gap-x-6">
-          {/* Location Icon */}
-          {user && (
-            <img
-              src="/location.png"
-              alt="location"
-              width={30}
-              height={30}
-              className="hidden lg:inline-block cursor-pointer"
-              onClick={() => navigate('/maps')}
-            />
-          )}
-
-          {/* Scooter Icon */}
-          {user && (
-            <img
-              src="/scooter.png"
-              alt="scooter"
-              width={30}
-              height={30}
-              className="hidden lg:inline-block cursor-pointer"
-              onClick={() => navigate('/rentals')}
-            />
-          )}
-
-          {/* Auth Button */}
-          {!user ? (
-            <Button
-              variant="text"
-              size="sm"
-              onClick={() => navigate('/login')}
-              className="hidden lg:inline-block text-lg"
-              style={{ fontFamily: 'Montserrat, sans-serif' }}
-            >
-              Sign In
-            </Button>
-          ) : (
-            <div className="hidden lg:flex items-center gap-3">
-              <span className="text-sm text-gray-700">
-                {user.email}
-              </span>
-              <Button
-                variant="text"
-                size="sm"
-                onClick={handleLogout}
-                className="text-red-600"
-              >
-                Logout
-              </Button>
-            </div>
-          )}
-        </div>
-
-        {/* Mobile Toggle */}
-        <IconButton
-          variant="text"
-          className="ml-auto h-6 w-6 lg:hidden"
-          ripple={false}
-          onClick={() => setOpenNav(!openNav)}
-        >
-          {openNav ? (
-            <svg viewBox="0 0 24 24" className="h-6 w-6">
-              <path
-                stroke="currentColor"
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          ) : (
-            <svg viewBox="0 0 24 24" className="h-6 w-6">
-              <path
-                stroke="currentColor"
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          )}
-        </IconButton>
-      </div>
-
-      {/* Mobile Menu */}
-      <Collapse open={openNav}>
-        <div className="container mt-4">
-          {navList}
-
-          <div className="flex flex-col gap-y-4 mt-6 items-center">
+          <div className="flex items-center gap-4">
             {user && (
-              <img
-                src="/location.png"
-                alt="location"
-                width={25}
-                className="cursor-pointer"
-                onClick={() => navigate('/maps')}
-              />
-            )}
-
-            {user && (
-              <img
-                src="/scooter.png"
-                alt="scooter"
-                width={25}
-                className="cursor-pointer"
-                onClick={() => navigate('/rentals')}
-              />
+              <>
+                <img src="/location.png" width={26} className="cursor-pointer" onClick={() => navigate('/maps')} />
+                <img src="/scooter.png" width={26} className="cursor-pointer" onClick={() => navigate('/rentals')} />
+              </>
             )}
 
             {!user ? (
-              <Button
-                fullWidth
-                variant="text"
-                onClick={() => navigate('/login')}
-              >
+              <Button size="sm" onClick={() => navigate('/login')}>
                 Sign In
               </Button>
             ) : (
-              <Button
-                fullWidth
-                variant="text"
-                onClick={handleLogout}
-                className="text-red-600"
-              >
-                Logout
-              </Button>
+              <Menu placement="bottom-end">
+                <MenuHandler>
+                  <Avatar size="sm" src={user?.photoURL} alt={user?.displayName || user?.email} className="cursor-pointer" />
+                </MenuHandler>
+                <MenuList>
+                  <MenuItem onClick={() => navigate('/profile')}>Profile</MenuItem>
+                  <MenuItem onClick={() => setOpenLogoutDialog(true)}>Logout</MenuItem>
+                </MenuList>
+              </Menu>
             )}
           </div>
+
+          <IconButton variant="text" className="lg:hidden" onClick={() => setOpenNav(!openNav)}>
+            ☰
+          </IconButton>
         </div>
-      </Collapse>
-    </Navbar>
+
+        <Collapse open={openNav}>
+          <div className="mt-4">{navList}</div>
+
+          <div className="mt-4 flex flex-col gap-2">
+            {!user ? (
+              <Button fullWidth onClick={() => navigate('/login')}>
+                Sign In
+              </Button>
+            ) : (
+              <>
+                <Button fullWidth onClick={() => navigate('/profile')}>
+                  Profile
+                </Button>
+                <Button fullWidth color="red" onClick={() => setOpenLogoutDialog(true)}>
+                  Logout
+                </Button>
+              </>
+            )}
+          </div>
+        </Collapse>
+      </Navbar>
+
+      <Dialog open={openLogoutDialog} handler={() => setOpenLogoutDialog(false)}>
+        <DialogHeader>Confirm Logout</DialogHeader>
+        <DialogBody divider>Are you sure you want to logout?</DialogBody>
+        <DialogFooter>
+          <Button variant="text" color="gray" onClick={() => setOpenLogoutDialog(false)}>
+            Cancel
+          </Button>
+          <Button color="red" onClick={handleLogout}>
+            Logout
+          </Button>
+        </DialogFooter>
+      </Dialog>
+    </>
   );
 }
-
-ScooterNavbar.propTypes = {
-  user: PropTypes.shape({
-    email: PropTypes.string.isRequired,
-  }),
-};
-
-export default ScooterNavbar;

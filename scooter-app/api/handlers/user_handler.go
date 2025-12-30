@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"sync"
 	"time"
@@ -75,4 +76,16 @@ func UpdateUserStatus(c *gin.Context) {
 	storeMu.Unlock()
 
 	c.JSON(http.StatusOK, gin.H{"message": "status updated"})
+}
+// GetVisitorCookie reads/creates the visitor cookie and returns its value in JSON
+func GetVisitorCookie(c *gin.Context) {
+    visitor, err := c.Cookie("visitor_id")
+    if err != nil || visitor == "" {
+        // generate a simple unique id
+        visitor = fmt.Sprintf("v-%d", time.Now().UnixNano())
+        // set cookie (not httpOnly so front-end can read it if browser accepts)
+        c.SetCookie("visitor_id", visitor, 3600*24, "/", "", false, false)
+    }
+
+    c.JSON(http.StatusOK, gin.H{"visitor_id": visitor})
 }

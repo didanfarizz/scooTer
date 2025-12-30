@@ -1,35 +1,64 @@
-import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { auth } from './utils/firebaseConfig';
-
-import ScooterNavbar from './components/navbar';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RentalsPage from './pages/RentalsPage';
 import PaymentPage from './pages/PaymentPage';
 import Maps from './components/maps';
-import { onAuthStateChanged } from 'firebase/auth';
+import ProfilePage from './pages/ProfilePage';
+import PublicRoute from './utils/PublicRoute.jsx';
+import PrivateRoute from './utils/PrivateRoute.jsx';
 
 function App() {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-    return () => unsub();
-  }, []);
-
   return (
     <Router>
-      <ScooterNavbar user={user} />
       <Routes>
-        <Route path="/" element={<HomePage user={user} />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/rentals" element={<RentalsPage user={user} />} />
-        <Route path="/payment" element={<PaymentPage user={user} />} />
-        <Route path="/maps" element={<Maps user={user} />} />
+        <Route path="/" element={<HomePage />} />
+
+        {/* LOGIN: hanya untuk user belum login */}
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
+          }
+        />
+
+        <Route
+          path="/rentals"
+          element={
+            <PrivateRoute>
+              <RentalsPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/payment"
+          element={
+            <PrivateRoute>
+              <PaymentPage />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/maps"
+          element={
+            <PrivateRoute>
+              <Maps />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <ProfilePage />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </Router>
   );

@@ -6,10 +6,12 @@ import HowToPage from '../components/howto';
 import FaqPage from '../components/faq';
 import JoinPage from '../components/join';
 import FooterPage from '../components/footer';
+import ScooterNavbar from '../components/navbar';
 
 const HomePage = ({ user }) => {
   return (
     <div className="">
+      <ScooterNavbar />
       <div className="lg:pb-8">
         <Dashboard user={user} />
       </div>
