@@ -115,7 +115,7 @@ export default function LoginForm() {
           disabled={loading}
           className="flex items-center justify-center gap-2"
         >
-          <img src="/google.svg" alt="Google" className="w-5 h-5" />
+          <img src="/google.png" alt="Google" className="w-5 h-5" />
           Continue with Google
         </Button>
 
